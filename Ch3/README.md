@@ -26,87 +26,92 @@
 
 ## 3. 성능 측정
 
-- 다양한 정확도 측정 방법
-    - 교차 검증
+다양한 정확도 측정 방법
+
+### 교차 검증
+
+cross_val_score() 함수로 폴드가 3개인 k-폴드 교차 검증 사용
+
+- 교차 검증을 구현해야하는 경우
+    
+    ```python
+    from sklearn.model_selection import StratifiedKFold
+    from sklearn.base import clone
+    
+    skfolds=StratifiedKFold(n_splits=3) #데이터셋이 섞여 있지 않을 경우 shuffle=True 사용
+    
+    for train_index, test_index in skfolds.split(X_train, y_train_5):
+    	clone_clf=clone(sgd_clf)
+    	X_train_folds=X_train[train_index]
+    	y_train_folds=y_train_5[train_index]
+    	X_test_fold=X_train[test_index]
+    	y_test_fold=y_train_5[test_index]
+    	clone_clf.fit(X_train_folds, y_train_folds)
+    	y_pred=clone_clf.predict(X_test_fold)
+    	n_correct=sum(y_pred==y_test_fold)
+    	print(n_correct/len(y_pred))
+    ```
+    
+    - 클래별 비율이 유지되도록 폴드를 만들기 위해 계층적 샘플링을 수행
+    - 매 반복에서 분류기 객체를 복제해 훈련 폴드로 훈련시키고 테스트 폴드로 예측을 만듦
+    - 올바른 예측의 수를 세어 정확한 예측의 비율을 출력
+- 모든 이미지를 가장 많이 등장하는 클래스(음성 클래스)로 분류하는 더미 분류기로도 정확도 측정 가능
+
+→ 특히 불균형한 데이터셋을 다룰 경우, 분류기의 성능 측정 지표로 정확도를 선호하지 않음 
+
+### 오차 행렬
+
+- 모든 A/B 쌍에 대해 클래스 A의 샘플이 클래스 B로 분류된 횟수를 세는 것
+    
+    분류기가 숫자 8의 이미지를 0으로 잘못 분류한 횟수를 오차 행렬의 8번 행 0번 열에 저장
+    
+- 오차 행렬 만들기
+    
+    실제 타깃과 비교할 수 있도록 예측 값을 만듦
+    
+    → 테스트 세트를 사용하는 대신 cross_val_predict() 함수를 사용
+    
+    - cross_val_predict(): k-폴드 교차 검증을 수행하지만 평가 점수 대신 각 테스트 폴드에서 얻은 예측을 반환
         
-        cross_val_score() 함수로 폴드가 3개인 k-폴드 교차 검증 사용
+        훈련 세트의 모든 샘플에 대한 깨끗한(훈련에 사용되지 않은 데이터에 대한) 예측을 얻음
         
-        - 교차 검증을 구현해야하는 경우
-            
-            ```python
-            from sklearn.model_selection import StratifiedKFold
-            from sklearn.base import clone
-            
-            skfolds=StratifiedKFold(n_splits=3) #데이터셋이 섞여 있지 않을 경우 shuffle=True 사용
-            
-            for train_index, test_index in skfolds.split(X_train, y_train_5):
-            	clone_clf=clone(sgd_clf)
-            	X_train_folds=X_train[train_index]
-            	y_train_folds=y_train_5[train_index]
-            	X_test_fold=X_train[test_index]
-            	y_test_fold=y_train_5[test_index]
-            	clone_clf.fit(X_train_folds, y_train_folds)
-            	y_pred=clone_clf.predict(X_test_fold)
-            	n_correct=sum(y_pred==y_test_fold)
-            	print(n_correct/len(y_pred))
-            ```
-            
-            - 클래별 비율이 유지되도록 폴드를 만들기 위해 계층적 샘플링을 수행
-            - 매 반복에서 분류기 객체를 복제해 훈련 폴드로 훈련시키고 테스트 폴드로 예측을 만듦
-            - 올바른 예측의 수를 세어 정확한 예측의 비율을 출력
-        - 모든 이미지를 가장 많이 등장하는 클래스(음성 클래스)로 분류하는 더미 분류기로도 정확도 측정 가능
-        
-        → 특히 불균형한 데이터셋을 다룰 경우, 분류기의 성능 측정 지표로 정확도를 선호하지 않음 
-        
-    - 오차 행렬
-        - 모든 A/B 쌍에 대해 클래스 A의 샘플이 클래스 B로 분류된 횟수를 세는 것
-            
-            분류기가 숫자 8의 이미지를 0으로 잘못 분류한 횟수를 오차 행렬의 8번 행 0번 열에 저장
-            
-        - 오차 행렬 만들기
-            
-            실제 타깃과 비교할 수 있도록 예측 값을 만듦
-            
-            → 테스트 세트를 사용하는 대신 cross_val_predict() 함수를 사용
-            
-            - cross_val_predict(): k-폴드 교차 검증을 수행하지만 평가 점수 대신 각 테스트 폴드에서 얻은 예측을 반환
-                
-                훈련 세트의 모든 샘플에 대한 깨끗한(훈련에 사용되지 않은 데이터에 대한) 예측을 얻음
-                
-            
-            confusion_matrix() 함수를 사용해 오차 행렬 생성
-            
-        - 행은 실제 클래스를 나타내고 열은 예측한 클래스를 나타냄
-            - 좋은 분류기일수록 주대각선의 값이 큼 → 진짜 양성과 진짜 음성 값
-    - 정밀도(양성 예측의 정확도)
-        
-        $$
-        정밀도=TP/(TP+FP)
-        $$
-        
-        - TP: True Positive, 진짜 양성
-        - FP: False Positive, 가짜 양성
-        - 가장 간단한 방법
-            - 제일 확신이 높은 샘플에 대해 양성 예측을 하고 나머지는 모두 음성 예측을 하는 분류기를 만들기 → 양성 예측이 맞을 경우 분류기의 정확도는 100%
-        - 재현율(recall): 분류기가 정확하게 감지한 양성 샘플의 비율, 민감도(sensitivity) 또는 진짜 양성 비율(true positive rate, TPR)
-            
-            $$
-            재현율=TP/(TP+FN)
-            
-            $$
-            
-            - FN: False Negative, 거짓 음성
-- 정밀도와 재현율
-    - 사이킷런은 정밀도와 재현율을 포함해 분류기의 지표를 계산하는 함수 제공
-    - F1 점수: 정밀도와 재현율의 조화 평균(낮은 값에 훨씬 더 높은 비중을 두는 평균)
-        
-        $$
-        F_1 = 2/(1/정밀도 + 1/재현율) = 2*(정밀도 * 재현율)/(정밀도 + 재현율) = TP/(TP+(FN+FP)/2)
-        $$
-        
-        → F1 점수는 정밀도와 재현율이 비슷해야 높은 점수를 가짐
-        
-    - 정밀도/재현율 트레이드오프: 정밀도를 올리면 재현율이 줄고 재현율을 올리면 정밀도가 주는 현상
+    
+    confusion_matrix() 함수를 사용해 오차 행렬 생성
+    
+- 행은 실제 클래스를 나타내고 열은 예측한 클래스를 나타냄
+    - 좋은 분류기일수록 주대각선의 값이 큼 → 진짜 양성과 진짜 음성 값
+
+### 정밀도(양성 예측의 정확도)
+
+$$
+정밀도=TP/(TP+FP)
+$$
+
+- TP: True Positive, 진짜 양성
+- FP: False Positive, 가짜 양성
+- 가장 간단한 방법
+    - 제일 확신이 높은 샘플에 대해 양성 예측을 하고 나머지는 모두 음성 예측을 하는 분류기를 만들기 → 양성 예측이 맞을 경우 분류기의 정확도는 100%
+- 재현율(recall): 분류기가 정확하게 감지한 양성 샘플의 비율, 민감도(sensitivity) 또는 진짜 양성 비율(true positive rate, TPR)
+    
+    $$
+    재현율=TP/(TP+FN)
+    
+    $$
+    
+    - FN: False Negative, 거짓 음성
+
+### 정밀도와 재현율
+
+- 사이킷런은 정밀도와 재현율을 포함해 분류기의 지표를 계산하는 함수 제공
+- F1 점수: 정밀도와 재현율의 조화 평균(낮은 값에 훨씬 더 높은 비중을 두는 평균)
+    
+    $$
+    F_1 = 2/(1/정밀도 + 1/재현율) = 2*(정밀도 * 재현율)/(정밀도 + 재현율) = TP/(TP+(FN+FP)/2)
+    $$
+    
+    → F1 점수는 정밀도와 재현율이 비슷해야 높은 점수를 가짐
+    
+- 정밀도/재현율 트레이드오프: 정밀도를 올리면 재현율이 줄고 재현율을 올리면 정밀도가 주는 현상
 - 정밀도/재현율 트레이드오프
     
     SGDClassifier 분류기의 작동을 통해 정밀도/재현율 트레이드오프를 이해하기
@@ -118,23 +123,25 @@
     - 정밀도/재현율 트레이드오프 지점을 선택하는 방법
         - 재현율에 대한 정밀도 곡선에서 정밀도가 급격하게 줄어드는 시점을 선택
         - 달성해야하는 정밀도 목표가 있을 경우 정밀도가 최소 그 목표치가 되는 가장 낮은 임곗값을 선택
-- ROC 곡선
-    - 수신기 조작 특성(receiver operating characteristic) 곡선: 거짓 양성 비율(FRR)에 대한 진짜 양성 비율(TPR, 재현율의 다른 이름)
-        - 거짓 양성 비율(FRR): 양성으로 잘못 분류된 음성 샘플의 비율, 1- (진짜 음성 비율,TNR, 특이도: 음성으로 정확하게 분류한 음성 샘플의 비율)
+
+### ROC 곡선
+
+- 수신기 조작 특성(receiver operating characteristic) 곡선: 거짓 양성 비율(FRR)에 대한 진짜 양성 비율(TPR, 재현율의 다른 이름)
+    - 거짓 양성 비율(FRR): 양성으로 잘못 분류된 음성 샘플의 비율, 1- (진짜 음성 비율,TNR, 특이도: 음성으로 정확하게 분류한 음성 샘플의 비율)
+    
+    → ROC 곡선은 민감도(재현율)에 대한 1-특이도 그래프
+    
+- 트레이드오프
+    - 재현율(TPR)이 높을수록 분류기가 만드는 거짓 양성 비율(FPR)이 증가
+    - 완전한 랜덤 분류기의 ROC 곡선은 대각선 형태 ↔ 좋은 분류기는 이 대각선에서 최대한 멀리 떨어져 있어야 함(왼쪽 위 모서리)
         
-        → ROC 곡선은 민감도(재현율)에 대한 1-특이도 그래프
+        → 곡선 아래의 면적(AUC, area under the curve)를 토해 분류기들을 비교 가능
         
-    - 트레이드오프
-        - 재현율(TPR)이 높을수록 분류기가 만드는 거짓 양성 비율(FPR)이 증가
-        - 완전한 랜덤 분류기의 ROC 곡선은 대각선 형태 ↔ 좋은 분류기는 이 대각선에서 최대한 멀리 떨어져 있어야 함(왼쪽 위 모서리)
-            
-            → 곡선 아래의 면적(AUC, area under the curve)를 토해 분류기들을 비교 가능
-            
-            - 완전한 분류기는 ROC의 AUC가 1이고 완전한 랜덤 분류기는 0.5
+        - 완전한 분류기는 ROC의 AUC가 1이고 완전한 랜덤 분류기는 0.5
 
 ## 4. 다중 분류
 
-다중 분류기(multiclass classifier, 다항 분류기(multinomial classifier))는 둘 이상의 클래스를 구별
+### 다중 분류기(multiclass classifier, 다항 분류기(multinomial classifier))는 둘 이상의 클래스를 구별
 
 - SGDClassifier와 SVC 같은 알고리즘들은 이진 분류만 가능 → 이진 분류기를 여러 개 사용해 다중 클래스를 분류 가능
     - 특정 숫자 하나만 구분하는 숫자별 이진 분류기 10개(0~9)를 훈련 가능
