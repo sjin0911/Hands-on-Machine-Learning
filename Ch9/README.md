@@ -82,7 +82,7 @@
         - 실루엣 점수: 모든 샘플에 대한 실루엣 계수의 평균
         - 실루엣 계수
             
-            $$ (b-a)/max(b,a)$$
+            $$(b-a)/max(b,a)$$
             
             a: 동일한 클러스터에 있는 다른 샘플까지 평균 거리
             
@@ -293,7 +293,7 @@
 
 - BIC(Bayesian Information Criterion)와 AIC(Akaike Information Criterion)
     
-    $$ BIC= \log{(m)}p-2\log{(\hat l)} \\
+    $$BIC= \log{(m)}p-2\log{(\hat l)} \\
         AIC=2p-2\log{(\hat l)}$$
     
     m: 샘플의 개수
