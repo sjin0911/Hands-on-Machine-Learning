@@ -8,15 +8,11 @@
     
     가중치의 합과 편향(또는 절편)이라는 상수를 더해 예측을 생성
     
-    $$
-    \hat{y}= \theta_0 + \theta_1x_1+ \theta_2x_2+...+\theta_nx_n
-    $$
+    $$\hat{y}= \theta_0 + \theta_1x_1+ \theta_2x_2+...+\theta_nx_n$$
     
     - 벡터 형태로 작성
         
-        $$
-        \hat{y}= h_\theta(x)=\theta *x
-        $$
+        $$\hat{y}= h_\theta(x)=\theta *x$$
         
         머신러닝에선 종종 벡터를 하나의 열을 가진 열 벡터로 나타냄
         
@@ -26,18 +22,14 @@
     
     - 선형 회귀 모델의 MSE 비용 함수
         
-        $$
-        MSE(X,h_\theta) = {2 \over m} \sum_{i=1}^m (\theta^Tx^{(i)}-y^{(i)})^2
-        $$
+        $$MSE(X,h_\theta) = {2 \over m} \sum_{i=1}^m (\theta^Tx^{(i)}-y^{(i)})^2$$
         
 
 ### 정규 방정식
 
 비용 함수를 최소화하는 $\theta$ 값을 찾기 위한 해석적인 방법
 
-$$
-\hat{\theta}=(X^TX)^{-1}X^Ty
-$$
+$$\hat{\theta}=(X^TX)^{-1}X^Ty$$
 
 - $\hat{\theta}$: 비용 함수를 최소화하는 $\theta$ 값
 - y는 y^1부터 y^m까지 포함하는 타깃 벡터
@@ -87,15 +79,11 @@ $$
 
 - 비용 함수의 편도함수
     
-    $$
-    {\partial \over \partial \theta_j}MSE(\theta)={2\over m} \sum_{i=1}^m (\theta^Tx^{(i)}-y^{(i)})x_j^{(i)}
-    $$
+    $${\partial \over \partial \theta_j}MSE(\theta)={2\over m} \sum_{i=1}^m (\theta^Tx^{(i)}-y^{(i)})x_j^{(i)}$$
     
 - 비용 함수의 그레이디언트 벡터
     
-    $$
-    \triangledown_\theta MSE(\theta)=\begin{bmatrix} {\partial \over \partial \theta_0}MSE(\theta) \\ {\partial \over \partial \theta_1}MSE(\theta) \\ ... \\ {\partial \over \partial \theta_n}MSE(\theta)\end{bmatrix} = {2 \over m}X^T(X\theta-y)
-    $$
+    $$\triangledown_\theta MSE(\theta)=\begin{bmatrix} {\partial \over \partial \theta_0}MSE(\theta) \\ {\partial \over \partial \theta_1}MSE(\theta) \\ ... \\ {\partial \over \partial \theta_n}MSE(\theta)\end{bmatrix} = {2 \over m}X^T(X\theta-y)$$
     
 - 매 스텝에서 훈련 데이터 전체를 사용해 매 경사 하강법 스텝에서 전체 훈련 세트 X에 대해 계산
     
@@ -198,9 +186,7 @@ $$
 
 - 규제항이 MSE에 추가
     
-    $$
-    규제항 = {\alpha \over m}\sum_{i=1}^n \theta_i^2
-    $$
+    $$규제항 = {\alpha \over m}\sum_{i=1}^n \theta_i^2$$
     
     - 학습 알고리즘을 데이터에 맞추고 모델의 가중치가 가능한 한 작게 유지
     - 훈련하는 동안에만 비용 함수에 추가
@@ -208,9 +194,7 @@ $$
     - 0일 경우 선형 회귀 모델과 같아지고 매우 클 경우 모든 가중치가 0에 가가워지고 데이터의 평균을 지나는 수평선이 됨
 - 릿지 회귀의 비용 함수
     
-    $$
-    J(\theta)=  MSE(\theta)+{\alpha \over m}\sum_{i=1}^n \theta_i^2
-    $$
+    $$J(\theta)=  MSE(\theta)+{\alpha \over m}\sum_{i=1}^n \theta_i^2$$
     
     - 편향 $\theta_0$ 는 규제되지 않음
     - $w$ 를 특성의 가중치 벡터($\theta_1$에서 $\theta_n$)라고 정의하면 규제항은 $\alpha(\lVert w \rVert_2)^2/m$ 과 같음
@@ -221,9 +205,7 @@ $$
 - 릿지 회귀를 계산하기 위해 사용하는 방법
     - 정규방정식을 사용하는 경우
         
-        $$
-        \hat\theta=(X^TX+\alpha A)^{-1}X^Ty
-        $$
+        $$\hat\theta=(X^TX+\alpha A)^{-1}X^Ty$$
         
         A는 편향에 해당하는 맨 왼쪽 위의 원소가 0인 (n+1)*(n+1)의 단위 행렬
         
@@ -239,16 +221,12 @@ $$
 
 비용 함수에 규제항을 더하는 형식이지만 $l_2$  노름이 아닌 가중치 벡터의 $l_1$ 노름을 사용
 
-$$
-J(\theta)=  MSE(\theta)+2\alpha\sum_{i=1}^n {| \theta_i |}
-$$
+$$J(\theta)=  MSE(\theta)+2\alpha\sum_{i=1}^n {| \theta_i |}$$
 
 - 덜 중요한 특성의 가중치를 제거 → 자동으로 특성 선택을 수행하고 희소 모델을 만듦
 - 라쏘의 비용 함수는 $\theta_i$=0에서 미분 불가능하지만  $\theta_i$=0일 때 서브그레이디언트 벡터 g를 사용하면 경사 하강법 적용 가능
     
-    $$
-    g(\theta,J)=\triangledown_\theta MSE(\theta)+\alpha\begin{pmatrix} sign(\theta_1)\\sign(\theta_2)\\...\\sign(\theta_n) \end{pmatrix}
-    $$
+    $$g(\theta,J)=\triangledown_\theta MSE(\theta)+\alpha\begin{pmatrix} sign(\theta_1)\\sign(\theta_2)\\...\\sign(\theta_n) \end{pmatrix}$$
     
     - 이 때, $\theta_i$는 음수일 때 -1, 0일 때 0, 양수일 때 1
 
@@ -258,9 +236,7 @@ $$
 
 혼합 정도는 혼합 비율 r을 사용해 조절 
 
-$$
-J(\theta)=MSE(\theta)+r(2\alpha\sum_{i=1}^n|\theta_i|)+(1-r)({\alpha \over m}\sum_{i=1}^n\theta_i^2)
-$$
+$$J(\theta)=MSE(\theta)+r(2\alpha\sum_{i=1}^n|\theta_i|)+(1-r)({\alpha \over m}\sum_{i=1}^n\theta_i^2)$$
 
 ### 조기 종료
 
@@ -277,15 +253,11 @@ $$
 
 입력 특성의 가중치 합을 계산하지만 선형 회귀처럼 바로 결과를 출력하지 않고 결괏값의 로지스틱을 출력
 
-$$
-\hat p=h_\theta(x)=\sigma(\theta^Tx)
-$$
+$$\hat p=h_\theta(x)=\sigma(\theta^Tx)$$
 
 - 로지스틱은 0과 1 사이의 값을 출력하는 시그모이드 함수
     
-    $$
-    \sigma(t)={1 \over 1+ep(-t)}
-    $$
+    $$\sigma(t)={1 \over 1+ep(-t)}$$
     
     ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd252a3-b085-498c-82e5-d9b17ba77910/049a234c-be07-4cf6-a793-367009b2ae3f/Untitled.png)
     
@@ -299,21 +271,17 @@ $$
 
 - 하나의 훈련 샘플에 대한 비용 함수
     
-    $$
-    c(\theta)=
+    $$c(\theta)=
     \begin{cases}
     -log(\hat p), & \text{if y=1} \\
     -log(1-\hat p), & \text{if y=0}
-    \end{cases}
-    $$
+    \end{cases}$$
     
 - 로지스틱 회귀의 비용 함수(로그 손실)
     
     전체 훈련 세트에 대한 비용 함수는 모든 훈련 샘플의 비용을 평균한 것
     
-    $$
-    J(\theta)=-{1 \over m}\sum_{i=1}^m[y^{(i)}log(\hat p^{(i)})+(1-y^{(i)})log(1-\hat p^{(i)})]
-    $$
+    $$J(\theta)=-{1 \over m}\sum_{i=1}^m[y^{(i)}log(\hat p^{(i)})+(1-y^{(i)})log(1-\hat p^{(i)})]$$
     
     - 최솟값을 계산할 순 없지만 볼록 함수이므로 경사 하강법이 전역 최솟값을 보장
 
@@ -331,17 +299,13 @@ $$
 
 - 샘플 x가 주어지면 소프트맥스 회귀 모델이 각 클래스 k에 대한 점수 $s_k(x)$를 계산하고, 그 점수에 소프트맥스 함수를 적용하여 각 클래스의 확률을 추정
     
-    $$
-    s_k(x)=(\theta^{(k)})^Tx
-    $$
+    $$s_k(x)=(\theta^{(k)})^Tx$$
     
     - 파라미터 벡터 $\theta^{(k)}$는 파라미터 행렬에 행으로 저장
 - 소프트맥스 함수를 통과시켜 클래스 k에 속할 확률 $\hat p_k$를 추정 가능
     - 이 함수는 각 점수에 지수를 적용한 후 정규화
         
-        $$
-        \hat p_k=\sigma(s(x))_k={ \exp(s_k(x)) \over \sum_{j=1}^K \exp(s_j(x))}
-        $$
+        $$\hat p_k=\sigma(s(x))_k={ \exp(s_k(x)) \over \sum_{j=1}^K \exp(s_j(x))}$$
         
         - K: 클래스 수
         - s(x)는 샘플 x에 대한 각 클래스의 점수를 담은 벡터
@@ -349,9 +313,7 @@ $$
 - 로지스틱 회귀 분류기와 마찬가지로 기본적으로 추정 확률이 가장 높은 클래스를 선택
 - 소프트맥스 회귀 분류기의 예측
     
-    $$
-    \hat y=argmax_k\sigma(s(x))_k=argmax_ks_k(x)=argmax((\theta^{(k)})^Tx)
-    $$
+    $$\hat y=argmax_k\sigma(s(x))_k=argmax_ks_k(x)=argmax((\theta^{(k)})^Tx)$$
     
     - argmax 연산은 함수를 최대화하는 변수의 값을 반환
 - 소프트맥스 회귀 분류기는 한 번에 하나의 클래스만 예측 (다중 클래스이지만 다중 출력은 아님)
@@ -359,18 +321,13 @@ $$
     
     최소화할수록 타깃 클래스에 대해 낮은 확률을 예측하는 모델을 억제
     
-    $$
-    j(\Theta)=-{1 \over m}\sum_{i=1}^m\sum_{k=1}^K y_k^{(i)}log(\hat p_k^{(i)})
-    
-    $$
+    $$j(\Theta)=-{1 \over m}\sum_{i=1}^m\sum_{k=1}^K y_k^{(i)}log(\hat p_k^{(i)})$$
     
     - $y_k^{(i)}$는 i번째 샘플이 클래스 k에 속할 타깃 확률
     - 클래스가 두개만 존재할 경우 이 비용 함수는 로지스틱 회귀의 비용 함수와 같음
 - 클래스 k에 대한 크로스 엔트로프의 그레이디언트 벡터
     
-    $$
-    \triangledown_{\theta^{(k)}}J(\Theta)={1 \over m}\sum_{i=1}^m(\hat p_k^{(i)}-y_k^{(i)})x^{(i)}
-    $$
+    $$\triangledown_{\theta^{(k)}}J(\Theta)={1 \over m}\sum_{i=1}^m(\hat p_k^{(i)}-y_k^{(i)})x^{(i)}$$
     
 - 각 클래스에 대한 크레이디언트 벡터를 계산할 수 있으므로 비용 함수를 최소화하기 위한 파라미터 행렬 $\Theta$를 찾기 위해 경사 하강법 등 최적화 알고리즘 사용 가능
 

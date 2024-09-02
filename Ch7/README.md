@@ -184,27 +184,21 @@
         
         각 샘플 가중치($w^{(i)}$)는 1/m으로 초기화
         
-        $$
-        r_j={{\sum_{i=1}^m w^{(i)}}_{\hat h_j^{(i)}\neq y^{(i)}} \over {\sum_{i=1}^m w^{(i)}}}
-        $$
+        $$r_j={{\sum_{i=1}^m w^{(i)}}_{\hat h_j^{(i)}\neq y^{(i)}} \over {\sum_{i=1}^m w^{(i)}}}$$
         
     - 예측기 가중치 ($\alpha_j$)
         
         학습률 파라미터($\eta$): 기본값은 1
         
-        $$
-        \alpha_j=\eta \log{{1-r_j} \over r_j}
-        $$
+        $$\alpha_j=\eta \log{{1-r_j} \over r_j}$$
         
         - 예측기가 정확할수록 가중치는 높아짐
         - 랜덤추측이라면 0에 가깝고 랜덤 추측보다 정확도가 낮을 경우 음수
     - 가중치 업데이트 규칙
         
-        $$
-        w^{(i)} \leftarrow \begin{cases}
+        $$w^{(i)} \leftarrow \begin{cases}
         w^{(i)} & \hat y_j^{(i)}=y^{(i)}일 때 \\
-        w^{(i)} exp(\alpha_j) & \hat y_j^{(i)}\neq y^{(i)}일 때 \end{cases}
-        $$
+        w^{(i)} exp(\alpha_j) & \hat y_j^{(i)}\neq y^{(i)}일 때 \end{cases}$$
         
     - 이 후 모든 샘플의 가중치를 $\sum_{i=1}^m w^{(i)}$로 나눔
     - 새 예측기가 업데이트된 가중치를 사용해 훈련되고 전체 과정 반복
