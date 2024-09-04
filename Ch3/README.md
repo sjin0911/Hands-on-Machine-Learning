@@ -89,11 +89,12 @@ $$정밀도=TP/(TP+FP)$$
 - FP: False Positive, 가짜 양성
 - 가장 간단한 방법
     - 제일 확신이 높은 샘플에 대해 양성 예측을 하고 나머지는 모두 음성 예측을 하는 분류기를 만들기 → 양성 예측이 맞을 경우 분류기의 정확도는 100%
-- 재현율(recall): 분류기가 정확하게 감지한 양성 샘플의 비율, 민감도(sensitivity) 또는 진짜 양성 비율(true positive rate, TPR)
+### 재현율(recall)
+분류기가 정확하게 감지한 양성 샘플의 비율, 민감도(sensitivity) 또는 진짜 양성 비율(true positive rate, TPR)
     
-    $$재현율=TP/(TP+FN)$$
+$$재현율=TP/(TP+FN)$$
     
-    - FN: False Negative, 거짓 음성
+- FN: False Negative, 거짓 음성
 
 ### 정밀도와 재현율
 
