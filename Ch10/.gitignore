@@ -1,0 +1,4 @@
+my_mnist_logs
+
+#모든 케라스 모델 무시
+*.keras
